@@ -20,12 +20,12 @@ pre_filter_time = ""
 rsrcmgr = PDFResourceManager()
 rettxt = StringIO()
 laparams = LAParams()
-#request_methods = urllib3.PoolManager()
-#response = request_methods.request('GET', url)
+request_methods = urllib3.PoolManager()
+response = request_methods.request('GET', url)
 
-#fp = open('torishimari.pdf', 'wb')
-#fp.write(response.data)
-#fp.close()
+fp = open('torishimari.pdf', 'wb')
+fp.write(response.data)
+fp.close()
 
 # 縦書き文字を横並びで出力する
 laparams.detect_vertical = True
