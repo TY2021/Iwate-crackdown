@@ -81,27 +81,41 @@ for line in lines:
             if pre_filter_time != filter_time:
                 fp.write(filter_time)
                 pre_filter_time = filter_time
-            fp.write(pre_filter_time + line.strip())
+            fp.write(line.strip())
             fp.write("\n")
             pre_line = line
 fp.close()
 
-crack_lines = open("crackdown_statistics.csv", "r", encoding="utf_8", errors="", newline="" )
-crack_write = open("crackdown_statistics.csv", "w", encoding="utf_8", errors="", newline="" )
+crack_write = open("crackdown_statistics.csv", "a", encoding="utf_8", errors="", newline="" )
 writer = csv.writer(crack_write)
-break_flag = 0
 
 for line in lines:
-    for crack_line in crack_lines:
-        if line == crack_line[0]:
-            crack_line[1] += 1
-            break_flag = 1
-            break
-    if break_flag == 1:
-        writer.writerow([crack_line[0],crack_line[1]])
-    else:
-        writer.writerow([line,1])
-    break_flag = 0
+    #Check date nad daytime or nigth
+    if re.search('(\d{1,2})月(\d{1,2})日',line) is not None:
+        date = re.search('(\d{1,2})月(\d{1,2})日',line)
+        pdf_month = mojimoji.zen_to_han(date.group(1))
+        pdf_day = mojimoji.zen_to_han(date.group(2))
+        pdf_month = int(pdf_month)
+        pdf_day = int(pdf_day)
+        date = line.strip()
+        if pdf_month == month and pdf_day == day:
+            today_flag = 1
+        else:
+            today_flag = 0
+    if line.find("日中") > 0:
+        filter_time = "日中\n"
+    elif line.find("夜間") > 0:
+        filter_time = "夜間\n"
 
-crack_lines.close()
+    #Extract trafic crackdown
+    if (line.find("盛岡") > 0 or line.find("滝沢") > 0):
+        if(pre_line != line):
+            if pre_filter_time != filter_time:
+                pre_filter_time = filter_time
+            date_csv = date.strip()
+            time_csv = filter_time.strip()
+            area_csv = line.strip()
+            writer.writerow([date_csv,time_csv,area_csv])
+            pre_line = line
+
 crack_write.close()
