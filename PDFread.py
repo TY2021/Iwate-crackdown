@@ -87,11 +87,11 @@ for line in lines:
 fp.close()
 
 crack_lines = open("crackdown_statistics.csv", "r", encoding="utf_8", errors="", newline="" )
-crack_write = open("crackdown_statistics.csv", "w", encoding="utf_8", errors="", newline="" )
-writer = csv.writer(crack_write)
 break_flag = 0
 
 for line in lines:
+    crack_write = open("crackdown_statistics.csv", "w", encoding="utf_8", errors="", newline="" )
+    writer = csv.writer(crack_write)
     for crack_line in crack_lines:
         if line == crack_line[0]:
             crack_line[1] += 1
@@ -100,8 +100,9 @@ for line in lines:
     if break_flag == 1:
         writer.writerow([crack_line[0],crack_line[1]])
     else:
+        line = line.strip()
         writer.writerow([line,1])
     break_flag = 0
+    crack_write.close()
 
-
-crack_write.close()
+crack_lines.close()
