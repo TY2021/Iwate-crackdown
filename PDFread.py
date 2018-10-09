@@ -108,7 +108,7 @@ for line in lines:
         filter_time = "夜間\n"
 
     #Extract trafic crackdown
-    if (line.find("盛岡") > 0 or line.find("滝沢") > 0):
+    if (line.find("○") >= 0):
         if(pre_line != line):
             if pre_filter_time != filter_time:
                 pre_filter_time = filter_time
