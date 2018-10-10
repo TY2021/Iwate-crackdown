@@ -15,6 +15,7 @@ from io import StringIO
 
 url = "http://www2.pref.iwate.jp/~hp0802/oshirase/kou-sidou/torishimari/torishimari.pdf"
 now = datetime.datetime.now()
+year = now.year
 month = now.month
 day = now.day
 pre_line = ""
@@ -86,15 +87,19 @@ for line in lines:
             pre_line = line
 fp.close()
 
+crack_read = open("crackdown_statistics.csv", "r")
+crack_lines = csv.reader(crack_read)
 crack_write = open("crackdown_statistics.csv", "a", encoding="utf_8", errors="", newline="" )
 writer = csv.writer(crack_write)
+not_write_flag = 0
 
 for line in lines:
     #Check date nad daytime or nigth
     if re.search('(\d{1,2})月(\d{1,2})日',line) is not None:
-        date = re.search('(\d{1,2})月(\d{1,2})日',line)
+        date = re.search('(\d{1,2})月(\d{1,2})日（(.)）',line)
         pdf_month = mojimoji.zen_to_han(date.group(1))
         pdf_day = mojimoji.zen_to_han(date.group(2))
+        pdf_day_of_week = date.group(3)
         pdf_month = int(pdf_month)
         pdf_day = int(pdf_day)
         date = line.strip()
@@ -107,15 +112,25 @@ for line in lines:
     elif line.find("夜間") > 0:
         filter_time = "夜間\n"
 
-    #Extract trafic crackdown
+    #Write trafic crackdown
     if (line.find("○") >= 0):
         if(pre_line != line):
             if pre_filter_time != filter_time:
                 pre_filter_time = filter_time
-            date_csv = date.strip()
+            date_csv = str(year) + '/' + str(pdf_month) + '/' + str(pdf_day)
+            day_of_week_csv = pdf_day_of_week.strip()
             time_csv = filter_time.strip()
             area_csv = line.strip()
-            writer.writerow([date_csv,time_csv,area_csv])
+            area_csv = area_csv.strip('○')
+            area_csv = area_csv.lstrip()
+            for crack_line in crack_lines:
+                if date_csv == crack_line[0] and area_csv == crack_line[3]:
+                    not_write_flag = 1
+                    break
+            if not_write_flag != 1:
+                writer.writerow([date_csv,day_of_week_csv,time_csv,area_csv])
+            not_write_flag = 0
             pre_line = line
 
+crack_read.close()
 crack_write.close()
