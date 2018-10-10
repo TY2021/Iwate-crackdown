@@ -25,11 +25,11 @@ rettxt = StringIO()
 laparams = LAParams()
 request_methods = urllib3.PoolManager()
 response = request_methods.request('GET', url)
-'''
+
 fp = open('torishimari.pdf', 'wb')
 fp.write(response.data)
 fp.close()
-'''
+
 # 縦書き文字を横並びで出力する
 laparams.detect_vertical = True
 device = TextConverter(rsrcmgr, rettxt, codec='utf-8', laparams=laparams)
@@ -113,7 +113,7 @@ for line in lines:
         filter_time = "夜間\n"
 
     #Write trafic crackdown
-    if (line.find("○") >= 0):
+    if (line.find("○") > 0 and line.find("道") > 0):
         if(pre_line != line):
             if pre_filter_time != filter_time:
                 pre_filter_time = filter_time
@@ -124,6 +124,7 @@ for line in lines:
             area_csv = area_csv.strip('○')
             area_csv = area_csv.lstrip()
             for crack_line in crack_lines:
+                #print (date_csv + area_csv + ':' + crack_line[0] + crack_line[3])
                 if date_csv == crack_line[0] and area_csv == crack_line[3]:
                     not_write_flag = 1
                     break
