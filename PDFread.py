@@ -91,17 +91,18 @@ crack_read = open("crackdown_statistics.csv", "r")
 crack_lines = csv.reader(crack_read)
 crack_write = open("crackdown_statistics.csv", "a", encoding="utf_8", errors="", newline="" )
 writer = csv.writer(crack_write)
+weekday_list = ["月","火","水","木","金","土","日"]
 not_write_flag = 0
 
 for line in lines:
     #Check date nad daytime or nigth
     if re.search('(\d{1,2})月(\d{1,2})日',line) is not None:
-        date = re.search('(\d{1,2})月(\d{1,2})日（(.)）',line)
+        date = re.search('(\d{1,2})月(\d{1,2})日',line)
         pdf_month = mojimoji.zen_to_han(date.group(1))
         pdf_day = mojimoji.zen_to_han(date.group(2))
-        pdf_day_of_week = date.group(3)
         pdf_month = int(pdf_month)
         pdf_day = int(pdf_day)
+        pdf_day_of_week = weekday_list[datetime.date(year, pdf_month, pdf_day).weekday()]
         date = line.strip()
         if pdf_month == month and pdf_day == day:
             today_flag = 1
