@@ -1,0 +1,27 @@
+FROM python:3.5.2
+USER root
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+
+RUN apt-get update
+RUN apt-get install -y cron
+RUN apt-get -y install locales && \
+    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+ENV TZ JST-9
+ENV TERM xterm
+
+# cron設定ファイルの移動
+RUN mkdir /tmp
+ADD python-cron /tmp/ 
+RUN chmod 0644 /tmp/
+COPY Iwate_crackdown_read.py /tmp/
+COPY crackdown_statistics.csv /tmp/
+COPY torishimari.pdf /
+
+ADD ./ /
+
+
