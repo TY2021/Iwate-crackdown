@@ -86,6 +86,7 @@ def job():
                 area_txt = line.strip()
                 area_txt = area_txt.strip('○')
                 area_txt = area_txt.lstrip()
+                print (filter_time)
                 print (area_txt)
                 fp.write(area_txt)
                 fp.write("\n")
@@ -98,7 +99,7 @@ def job():
     writer = csv.writer(crack_write)
 
     for line in lines:
-        #取り締まりリストが日中か夜間か判断
+        #取り締まりの内容抜き出し
         if re.search('(\d{1,2})月(\d{1,2})日',line) is not None:
             date = re.search('(\d{1,2})月(\d{1,2})日',line)
             pdf_month = mojimoji.zen_to_han(date.group(1))
@@ -112,11 +113,11 @@ def job():
             else:
                 today_flag = 0
         if line.find("日中") > 0:
-            filter_time = "日中\n"
+            filter_time = "日中"
         elif line.find("夜間") > 0:
-            filter_time = "夜間\n"
+            filter_time = "夜間"
 
-        #日中 or 夜間の取り締まりリストを書き込み
+        #取り締まりリストを書き込み
         if (line.find("○") > 0 and line.find("道") > 0):
             if(pre_line != line):
                 if pre_filter_time != filter_time:
@@ -128,8 +129,7 @@ def job():
                 area_csv = area_csv.strip('○')
                 area_csv = area_csv.lstrip()
                 for crack_line in crack_lines:
-                    #print (date_csv + area_csv + ':' + crack_line[0] + crack_line[3])
-                    if date_csv == crack_line[0] and area_csv == crack_line[3]:
+                    if date_csv == crack_line[0]:
                         not_write_flag = 1
                         break
                 if not_write_flag != 1:
@@ -141,8 +141,10 @@ def job():
     crack_write.close()
 
 #AM10:30にjobを実行
-schedule.every().day.at("10:00").do(job)
-
+#schedule.every().day.at("10:00").do(job)
+"""
 while True:
     schedule.run_pending()
     time.sleep(1)
+"""
+job()
