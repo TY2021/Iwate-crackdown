@@ -1,3 +1,4 @@
+# coding: utf-8
 import urllib3
 import sys
 import datetime
@@ -22,7 +23,9 @@ def job():
     pre_line = ""
     pre_filter_time = ""
     weekday_list = ["月","火","水","木","金","土","日"]
+    today_flag = 0
     not_write_flag = 0
+    morioka_takizawa_count = 0
     rsrcmgr = PDFResourceManager()
     rettxt = StringIO()
     laparams = LAParams()
@@ -77,6 +80,7 @@ def job():
         elif line.find("夜間") > 0:
             filter_time = "夜間\n"
 
+
         #今日の盛岡 or 滝沢の取り締まりリストを書き込み
         if (line.find("盛岡") > 0 or line.find("滝沢") > 0) and today_flag == 1:
             if(pre_line != line):
@@ -86,11 +90,13 @@ def job():
                 area_txt = line.strip()
                 area_txt = area_txt.strip('○')
                 area_txt = area_txt.lstrip()
-                print (filter_time)
-                print (area_txt)
+                if morioka_takizawa_count == 0:
+                    print (str(pdf_month) + "/" + str(pdf_day) + "/"+ weekday_list[datetime.date(year, pdf_month, pdf_day).weekday()])
+                print (filter_time + area_txt)
                 fp.write(area_txt)
                 fp.write("\n")
                 pre_line = line
+                morioka_takizawa_count += 1
     fp.close()
 
     crack_read = open("crackdown_statistics.csv", "r")
@@ -141,10 +147,8 @@ def job():
     crack_write.close()
 
 #AM10:30にjobを実行
-#schedule.every().day.at("10:00").do(job)
-"""
+schedule.every(1).minutes.do(job)
+
 while True:
     schedule.run_pending()
     time.sleep(1)
-"""
-job()
