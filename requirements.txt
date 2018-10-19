@@ -1,1 +1,4 @@
-
+urllib3
+schedule
+mojimoji
+pdfminer.six
