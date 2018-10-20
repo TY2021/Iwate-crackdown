@@ -147,7 +147,7 @@ def job():
     crack_write.close()
 
 #AM10:30にjobを実行
-schedule.every(1).minutes.do(job)
+schedule.every().day.at("10:30").do(job)
 
 while True:
     schedule.run_pending()
