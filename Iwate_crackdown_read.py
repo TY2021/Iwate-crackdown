@@ -126,7 +126,7 @@ for line in lines:
             area_csv = area_csv.lstrip()
             for crack_line in crack_lines:
                 #print (date_csv + area_csv + ':' + crack_line[0] + crack_line[3])
-                if date_csv == crack_line[0] and area_csv == crack_line[3]:
+                if date_csv == crack_line[0]:
                     not_write_flag = 1
                     break
             if not_write_flag != 1:
