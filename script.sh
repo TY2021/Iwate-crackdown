@@ -1,0 +1,1 @@
+python3 /Read_iwate_crackdown.py

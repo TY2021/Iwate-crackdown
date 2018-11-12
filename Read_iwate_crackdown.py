@@ -61,7 +61,6 @@ def job():
     lines = fp.readlines() # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
     fp.close()
 
-    fp = open('today_crackdown.txt', 'w')
     # lines: リスト。要素は1行の文字列データ
     for line in lines:
         #今日の取り締まりリスト化どうか判断 日中か夜間かも判断
@@ -79,25 +78,6 @@ def job():
             filter_time = "日中\n"
         elif line.find("夜間") > 0:
             filter_time = "夜間\n"
-
-
-        #今日の盛岡 or 滝沢の取り締まりリストを書き込み
-        if (line.find("盛岡") > 0 or line.find("滝沢") > 0) and today_flag == 1:
-            if(pre_line != line):
-                if pre_filter_time != filter_time:
-                    fp.write(filter_time)
-                    pre_filter_time = filter_time
-                area_txt = line.strip()
-                area_txt = area_txt.strip('○')
-                area_txt = area_txt.lstrip()
-                if morioka_takizawa_count == 0:
-                    print (str(pdf_month) + "/" + str(pdf_day) + "/"+ weekday_list[datetime.date(year, pdf_month, pdf_day).weekday()])
-                print (filter_time + area_txt)
-                fp.write(area_txt)
-                fp.write("\n")
-                pre_line = line
-                morioka_takizawa_count += 1
-    fp.close()
 
     crack_read = open("crackdown_statistics.csv", "r")
     crack_lines = csv.reader(crack_read)
@@ -146,9 +126,4 @@ def job():
     crack_read.close()
     crack_write.close()
 
-#AM10:30にjobを実行
-schedule.every().day.at("10:00").do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+job()

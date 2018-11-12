@@ -1,0 +1,1 @@
+*/2 * * * * root python3 /Read_iwate_crackdown.py >> /val/log/cron.log 2>&1
